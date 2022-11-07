@@ -1060,7 +1060,14 @@ void Decoder::setMedia(const QUrl &media, QIODevice *stream)
         context->pb = avio_alloc_context(buffer, bufferSize, false, stream, ::read, nullptr, ::seek);
     }
 
-    int ret = avformat_open_input(&context, url.constData(), nullptr, nullptr);
+    AVDictionary *opts = nullptr;
+    if(this.userAgent != nullptr && this.userAgent.length() > 0) {
+        av_dict_set(&opts, "user_agent", this.userAgent.toStdString().c_str(), 0);
+    }
+    if(this.cookies != nullptr && this.cookies.length() > 0) {
+        av_dict_set(&opts, "cookies", this.cookies.toStdString().c_str(), 0);
+    }
+    int ret = avformat_open_input(&context, url.constData(), nullptr, &opts);
     if (ret < 0) {
         auto code = QMediaPlayer::ResourceError;
         if (ret == AVERROR(EACCES))
@@ -1104,6 +1111,16 @@ void Decoder::setMedia(const QUrl &media, QIODevice *stream)
 
     demuxer = new Demuxer(this, context);
     demuxer->start();
+}
+
+void Decoder::setUserAgent(const QString &userAgent)
+{
+    this.userAgent = userAgent;
+}
+
+void Decoder::setCookies(const QString &cookies)
+{
+    this.cookies = cookies;
 }
 
 int Decoder::activeTrack(QPlatformMediaPlayer::TrackType type)

@@ -48,6 +48,8 @@ public:
     QUrl media() const override;
     const QIODevice *mediaStream() const override;
     void setMedia(const QUrl &media, QIODevice *stream) override;
+    void setUserAgent(const QString &userAgent) override;
+    void setCookies(const QString &cookies) override;
 
     void play() override;
     void pause() override;
@@ -89,6 +91,9 @@ private:
     QUrl m_url;
     QIODevice *m_device = nullptr;
     float m_playbackRate = 1.;
+
+    QString userAgent = nullptr;
+    QString cookies = nullptr;
 };
 
 QT_END_NAMESPACE

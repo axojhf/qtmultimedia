@@ -49,12 +49,16 @@ public:
     QUrl qrcMedia;
     std::unique_ptr<QFile> qrcFile;
     QUrl source;
+    QString userAgent = nullptr;
+    QString cookies = nullptr;
     QIODevice *stream = nullptr;
 
     QMediaPlayer::PlaybackState state = QMediaPlayer::StoppedState;
     QMediaPlayer::Error error = QMediaPlayer::NoError;
 
     void setMedia(const QUrl &media, QIODevice *stream = nullptr);
+    void setUserAgent(const QString &userAgent);
+    void setCookies(const QString &cookies);
 
     QList<QMediaMetaData> trackMetaData(QPlatformMediaPlayer::TrackType s) const;
 

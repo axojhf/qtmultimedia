@@ -149,11 +149,16 @@ class VideoRenderer;
 class Decoder : public QObject
 {
     Q_OBJECT
+private:
+    QString userAgent = nullptr;
+    QString cookies = nullptr;
 public:
     Decoder();
     ~Decoder();
 
     void setMedia(const QUrl &media, QIODevice *stream);
+    void setUserAgent(const QString &userAgent);
+    void setCookies(const QString &cookies);
 
     void init();
     void setState(QMediaPlayer::PlaybackState state);

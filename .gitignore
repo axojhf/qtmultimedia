@@ -55,3 +55,8 @@ tests/auto/cmake/build
 CMakeLists.txt.user
 build-*-Debug
 build-*-Release
+cmake-build-*
+build
+.idea
+mingw
+.vscode

@@ -124,6 +124,8 @@ void QFFmpegMediaPlayer::setMedia(const QUrl &media, QIODevice *stream)
     decoder = new Decoder;
     connect(decoder, &Decoder::endOfStream, this, &QFFmpegMediaPlayer::endOfStream);
     connect(decoder, &Decoder::errorOccured, this, &QFFmpegMediaPlayer::error);
+    decoder->setUserAgent(this.userAgent);
+    decoder->setCookies(this.cookies);
     decoder->setMedia(media, stream);
     decoder->setAudioSink(m_audioOutput);
     decoder->setVideoSink(m_videoSink);
@@ -138,6 +140,16 @@ void QFFmpegMediaPlayer::setMedia(const QUrl &media, QIODevice *stream)
 
 
     QMetaObject::invokeMethod(this, "delayedLoadedStatus", Qt::QueuedConnection);
+}
+
+void QFFmpegMediaPlayer::setUserAgent(const QString &userAgent)
+{
+    this.userAgent = userAgent;
+}
+
+void QFFmpegMediaPlayer::setCookies(const QString &cookies)
+{
+    this.cookies = cookies;
 }
 
 void QFFmpegMediaPlayer::play()
