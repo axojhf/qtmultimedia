@@ -129,8 +129,8 @@ void QMediaPlayerPrivate::setMedia(const QUrl &media, QIODevice *stream)
     if (!control)
         return;
 
-    control->setUserAgent(this.userAgent);
-    control->setCookies(this.cookies);
+    control->setUserAgent(this->userAgent);
+    control->setCookies(this->cookies);
     std::unique_ptr<QFile> file;
 
     // Back ends can't play qrc files directly.
@@ -228,12 +228,12 @@ QList<QMediaMetaData> QMediaPlayerPrivate::trackMetaData(QPlatformMediaPlayer::T
 
 void QMediaPlayerPrivate::setUserAgent(const QString &userAgent)
 {
-    this.userAgent = userAgent;
+    this->userAgent = userAgent;
 }
 
 void QMediaPlayerPrivate::setCookies(const QString &cookies)
 {
-    this.cookies = cookies;
+    this->cookies = cookies;
 }
 
 /*!
