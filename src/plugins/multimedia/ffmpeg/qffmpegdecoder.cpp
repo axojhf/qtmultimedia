@@ -157,15 +157,15 @@ void Demuxer::stopDecoding()
 int Demuxer::seek(qint64 pos)
 {
     QMutexLocker locker(&mutex);
-    for (StreamDecoder *d : qAsConst(streamDecoders)) {
+    for (StreamDecoder *d : std::as_const(streamDecoders)) {
         if (d)
             d->mutex.lock();
     }
-    for (StreamDecoder *d : qAsConst(streamDecoders)) {
+    for (StreamDecoder *d : std::as_const(streamDecoders)) {
         if (d)
             d->flush();
     }
-    for (StreamDecoder *d : qAsConst(streamDecoders)) {
+    for (StreamDecoder *d : std::as_const(streamDecoders)) {
         if (d)
             d->mutex.unlock();
     }
@@ -193,7 +193,7 @@ void Demuxer::sendFinalPacketToStreams()
 {
     if (m_isStopped.loadAcquire())
         return;
-    for (auto *streamDecoder : qAsConst(streamDecoders)) {
+    for (auto *streamDecoder : std::as_const(streamDecoders)) {
         qCDebug(qLcDemuxer) << "Demuxer: sending last packet to stream" << streamDecoder;
         if (!streamDecoder)
             continue;
@@ -211,7 +211,7 @@ void Demuxer::cleanup()
 {
     qCDebug(qLcDemuxer) << "Demuxer::cleanup";
 #ifndef QT_NO_DEBUG
-    for (auto *streamDecoder : qAsConst(streamDecoders)) {
+    for (auto *streamDecoder : std::as_const(streamDecoders)) {
         Q_ASSERT(!streamDecoder);
     }
 #endif
@@ -426,31 +426,27 @@ void StreamDecoder::decode()
 {
     Q_ASSERT(codec.context());
 
-    AVFrame *frame = av_frame_alloc();
-//    if (type() == 0)
-//        qDebug() << "receiving frame";
-    int res = avcodec_receive_frame(codec.context(), frame);
-
+    auto frame = makeAVFrame();
+    //    if (type() == 0)
+    //        qCDebug(qLcDecoder) << "receiving frame";
+    int res = avcodec_receive_frame(codec.context(), frame.get());
     if (res >= 0) {
         qint64 pts;
         if (frame->pts != AV_NOPTS_VALUE)
             pts = codec.toUs(frame->pts);
         else
             pts = codec.toUs(frame->best_effort_timestamp);
-        addFrame(Frame{frame, codec, pts});
+        addFrame(Frame{ std::move(frame), codec, pts });
     } else if (res == AVERROR(EOF) || res == AVERROR_EOF) {
         eos.storeRelease(true);
-        av_frame_free(&frame);
         timeOut = -1;
         return;
     } else if (res != AVERROR(EAGAIN)) {
         qWarning() << "error in decoder" << res << err2str(res);
-        av_frame_free(&frame);
         return;
     } else {
         // EAGAIN
         decoderHasNoFrames = true;
-        av_frame_free(&frame);
     }
 
     Packet packet = peekPacket();

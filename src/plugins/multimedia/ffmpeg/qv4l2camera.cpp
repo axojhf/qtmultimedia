@@ -257,7 +257,7 @@ void QV4L2CameraBuffers::release(int index)
 
 void QV4L2CameraBuffers::unmapBuffers()
 {
-    for (const auto &b : qAsConst(mappedBuffers))
+    for (const auto &b : std::as_const(mappedBuffers))
         munmap(b.data, b.size);
     mappedBuffers.clear();
 }
@@ -919,7 +919,7 @@ void QV4L2Camera::startCapturing()
         buf.memory = V4L2_MEMORY_MMAP;
 
         if (ioctl(d->v4l2FileDescriptor, VIDIOC_QBUF, &buf) < 0) {
-            qWarning() << "failed to setup mapped buffer";
+            qWarning() << "failed to set up mapped buffer";
             return;
         }
     }
