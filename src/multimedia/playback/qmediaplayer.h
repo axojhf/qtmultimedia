@@ -23,6 +23,8 @@ class Q_MULTIMEDIA_EXPORT QMediaPlayer : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
+    Q_PROPERTY(QString cookies READ cookies WRITE setCookies NOTIFY cookiesChanged)
+    Q_PROPERTY(QString userAgent READ userAgent WRITE setuserAgent NOTIFY userAgentChanged)
     Q_PROPERTY(qint64 duration READ duration NOTIFY durationChanged)
     Q_PROPERTY(qint64 position READ position WRITE setPosition NOTIFY positionChanged)
     Q_PROPERTY(float bufferProgress READ bufferProgress NOTIFY bufferProgressChanged)
@@ -116,6 +118,8 @@ public:
     QVideoSink *videoSink() const;
 
     QUrl source() const;
+    QString cookies() const;
+    QString userAgent() const;
     const QIODevice *sourceDevice() const;
 
     PlaybackState playbackState() const;
@@ -154,10 +158,14 @@ public Q_SLOTS:
     void setPlaybackRate(qreal rate);
 
     void setSource(const QUrl &source);
+    void setCookies(const QString &cookies);
+    void setuserAgent(const QString &userAgent);
     void setSourceDevice(QIODevice *device, const QUrl &sourceUrl = QUrl());
 
 Q_SIGNALS:
     void sourceChanged(const QUrl &media);
+    void cookiesChanged(const QString &cookies);
+    void userAgentChanged(const QString &userAgent);
     void playbackStateChanged(QMediaPlayer::PlaybackState newState);
     void mediaStatusChanged(QMediaPlayer::MediaStatus status);
 

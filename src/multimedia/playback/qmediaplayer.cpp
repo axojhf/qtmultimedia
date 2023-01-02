@@ -130,7 +130,8 @@ void QMediaPlayerPrivate::setMedia(const QUrl &media, QIODevice *stream)
 {
     if (!control)
         return;
-
+    control->setUserAgent(this->userAgent);
+    control->setCookies(this->cookies);
     std::unique_ptr<QFile> file;
 
     // Back ends can't play qrc files directly.
@@ -226,6 +227,16 @@ QList<QMediaMetaData> QMediaPlayerPrivate::trackMetaData(QPlatformMediaPlayer::T
     return tracks;
 }
 
+void QMediaPlayerPrivate::setUserAgent(const QString &userAgent)
+{
+    this->userAgent = userAgent;
+}
+
+void QMediaPlayerPrivate::setCookies(const QString &cookies)
+{
+    this->cookies = cookies;
+}
+
 /*!
     Constructs a QMediaPlayer instance as a child of \a{parent}.
 */
@@ -268,6 +279,20 @@ QUrl QMediaPlayer::source() const
     Q_D(const QMediaPlayer);
 
     return d->source;
+}
+
+QString QMediaPlayer::cookies() const
+{
+    Q_D(const QMediaPlayer);
+
+    return d->cookies;
+}
+
+QString QMediaPlayer::userAgent() const
+{
+    Q_D(const QMediaPlayer);
+
+    return d->userAgent;
 }
 
 /*!
@@ -619,6 +644,18 @@ void QMediaPlayer::setSource(const QUrl &source)
 
     d->setMedia(source, nullptr);
     emit sourceChanged(d->source);
+}
+
+void QMediaPlayer::setCookies(const QString &cookies)
+{
+    Q_D(QMediaPlayer);
+    d->cookies = cookies;
+}
+
+void QMediaPlayer::setuserAgent(const QString &userAgent)
+{
+    Q_D(QMediaPlayer);
+    d->userAgent = userAgent;
 }
 
 /*!

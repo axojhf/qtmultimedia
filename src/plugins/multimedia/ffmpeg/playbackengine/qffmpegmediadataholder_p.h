@@ -33,6 +33,9 @@ struct AVFormatContextDeleter
 
 class MediaDataHolder
 {
+private:
+    QString userAgent = nullptr;
+    QString cookies = nullptr;
 public:
     struct StreamInfo
     {

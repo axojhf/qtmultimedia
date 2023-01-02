@@ -55,6 +55,8 @@ public:
     virtual QUrl media() const = 0;
     virtual const QIODevice *mediaStream() const = 0;
     virtual void setMedia(const QUrl &media, QIODevice *stream) = 0;
+    virtual void setUserAgent(const QString &userAgent) {}
+    virtual void setCookies(const QString &cookies) {}
 
     virtual void play() = 0;
     virtual void pause() = 0;
